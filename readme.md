@@ -20,6 +20,7 @@ Step 1:
 - Download project and run:
 ```bash
     cp .env.example .env
+    php artisan key:generate
 ```
 Step 2:
 - Run
@@ -30,7 +31,7 @@ docker run --rm -v $(pwd):/app composer install
 Step 3:
 - set permisions on the project
 ```bash
-sudo chown -R $USER:$USER ~/laravel-app
+sudo chown -R $USER:$USER *
 ```
 Step 4:
 - run bash
