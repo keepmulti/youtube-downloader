@@ -9,7 +9,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class YoutubeDataTest extends TestCase
 {
 
-
+    /**
+     * test request valid
+     */
     public function testValidRequest()
     {
         $testData = [
@@ -34,15 +36,50 @@ class YoutubeDataTest extends TestCase
                 [
                     'url' => $testCase['input'],
                     '_token' => csrf_token()
-            ]);
+                ]);
 
-            $response->assertStatus(500);
+            $response->assertStatus(200);
 
             $requestOutput = json_decode($response->content(), true);
 
-            $this->assertSame($requestOutput['status'], 500);
+            $this->assertSame($requestOutput['status'], 200);
             $this->assertSame($requestOutput['data']['title'], $testCase['output']['title']);
             $this->assertSame(count($requestOutput['data']['downloadlink']), $testCase['output']['downloadlink']);
+        }
+    }
+
+    /**
+     * test invalid request
+     */
+    public function testInvalidRequest()
+    {
+        $testData = [
+            [
+                'input' => 'https://www.youtube.com/',
+                'output' => [
+                    'status' => 500,
+                    'message' => ''
+                ]
+            ],
+            [
+                'input' => 'https://abc',
+                'output' => [
+                    'status' => 500,
+                    'message' => ''
+                ]
+            ],
+        ];
+
+        foreach ($testData as $testCase) {
+            $response = $this->post(route('getinfo'),
+                [
+                    'url' => $testCase['input'],
+                    '_token' => csrf_token()
+                ]);
+
+            $requestOutput = json_decode($response->content(), true);
+
+            $this->assertSame($requestOutput, $testCase['output']);
         }
     }
 }
